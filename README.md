@@ -10,12 +10,15 @@
 
 ## How Does It Work / Как это работает
 
-* It uses Zenmoney's OAuth for authentication.
-* It uses Zenmoney's API to fetch accounts and savings goals; goals with linked account are then passed further.
-* It extracts all transactions for the account and passes them further for visualization.
+* It loads goals from CSV file of special format (this file should contains the following headers: goalName, accountName, total).
+* It loads transactions from CSV transaction dump, which can be exported manually from within Zenmoney webapp GUI.
+* It extracts all transactions of special-purpose savings accounts and passes them further for visualization.
 
 --------------------------------------
 
-* Для аутентификации используется протокол OAuth.
-* Через API Zenmoney достаются счета и цели, затем цели, связанные с каким-нибудь счётом передаются для дальнейшей обработки.
-* Скрипт получает все транзакции для счёта и передаёт их дальше для визуализации.
+* Цели накопления загружаются из особым образом структурированного CSV-файла (необходимые заголовки: goalName, accountName, total).
+* Транзакции загружаются из дампа транзакций, который можно сформировать вручную в веб-приложении "Дзен-мани" (*ещё* -> *Экспорт* в строке навигации).
+* Извлекаются все транзакции по целевым накопительным счетам и передаются дальше для визуализации.
+
+## TODO
+* Authenticate via OAuth and retrieve data via Zenmoney API
