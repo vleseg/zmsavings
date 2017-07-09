@@ -4,6 +4,7 @@ import unicodecsv as csv
 class CSVSource(object):
     def __init__(self, conn_settings):
         path = conn_settings.path
+        print 'Loading file "{0}"'.format(path)
 
         f = open(path, 'rb')
         self.reader = csv.reader(f)
