@@ -1,0 +1,4 @@
+appdirs==1.4.3
+attrs==17.2.0
+unicodecsv==0.14.1
+wheel==0.24.0
