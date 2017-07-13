@@ -1,14 +1,14 @@
 # Project imports
-from meta.settings import CSVConnectionSettings
+from meta.settings import CsvConnectionSettings
 from utils import path_from_appdata_or_input
 
 
 APP_NAME = 'zmsavings'
-GOAL_CONN_SETTINGS = CSVConnectionSettings(
+GOAL_CONN_SETTINGS = CsvConnectionSettings(
     path=path_from_appdata_or_input(APP_NAME, 'goalsFile', 'CSV with goals'),
     use_fields=['goalName', 'accountName', 'total']
 )
-TRANSACTIONS_CONN_SETTINGS = CSVConnectionSettings(
+TRANSACTIONS_CONN_SETTINGS = CsvConnectionSettings(
     path=path_from_appdata_or_input(
         APP_NAME, 'transactionsFile', 'CSV with transactions'),
     use_fields=[

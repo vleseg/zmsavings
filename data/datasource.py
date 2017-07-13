@@ -1,14 +1,14 @@
 import unicodecsv as csv
 
 
-class CSVSource(object):
-    def __init__(self, conn_settings):
-        path = conn_settings.path
+class CsvSource(object):
+    def __init__(self, connection_settings):
+        path = connection_settings.path
         print 'Loading file "{0}"'.format(path)
 
         f = open(path, 'rb')
         self.reader = csv.reader(f)
-        for _ in xrange(conn_settings.header_row - 1):
+        for _ in xrange(connection_settings.header_row - 1):
             next(self.reader)
         header = next(self.reader)
         if len(set(header)) < len(header):
@@ -16,7 +16,7 @@ class CSVSource(object):
                              .format(path))
 
         self.header_map = {}
-        for field_name in conn_settings.use_fields:
+        for field_name in connection_settings.use_fields:
             try:
                 self.header_map[field_name] = header.index(field_name)
             except ValueError:

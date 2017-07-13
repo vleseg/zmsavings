@@ -1,4 +1,4 @@
-from model import Goal, Transaction
+from data.model import Goal, Transaction
 
 
 def main():
