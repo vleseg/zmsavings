@@ -20,6 +20,7 @@ class Goal(BaseModel):
     name = attr.ib()
     account_name = attr.ib()
     total = attr.ib()
+    start_date = attr.ib()
 
 
 @attr.s

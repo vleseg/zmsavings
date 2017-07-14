@@ -1,6 +1,7 @@
 # Project imports
 import settings
-from data.datasource import CsvSource
+from datasource import CsvSource
+from converter import Converter
 
 
 class CsvConnector(object):
@@ -12,9 +13,16 @@ class CsvConnector(object):
 
     def all(self):
         for entry in self.source.all():
-            yield {
-                model_field: entry[csv_field] for model_field, csv_field
-                in self.model2csv_fields.items()}
+            result = {}
+
+            for model_field, csv_field in self.model2csv_fields.items():
+                if isinstance(csv_field, Converter):
+                    value = csv_field.convert(entry[csv_field.field_name])
+                else:
+                    value = entry[csv_field]
+                result[model_field] = value
+
+            yield result
 
 
 class GoalConnector(CsvConnector):
@@ -23,13 +31,14 @@ class GoalConnector(CsvConnector):
         name='goalName',
         account_name='accountName',
         total='total',
+        start_date=Converter.to_datetime('startDate', fmt='%d.%m.%Y'),
     )
 
 
 class TransactionConnector(CsvConnector):
     connection_settings = settings.TRANSACTIONS_CONN_SETTINGS
     model2csv_fields = dict(
-        date='date',
+        date=Converter.to_datetime('date', fmt="%Y-%m-%d"),
         outcome_account_name='outcomeAccountName',
         income_account_name='incomeAccountName',
         outcome='outcome',

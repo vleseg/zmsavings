@@ -1,4 +1,6 @@
 import unicodecsv as csv
+# Project imports
+from meta.constants import ALL
 
 
 class CsvSource(object):
@@ -16,13 +18,16 @@ class CsvSource(object):
                              .format(path))
 
         self.header_map = {}
-        for field_name in connection_settings.use_fields:
-            try:
-                self.header_map[field_name] = header.index(field_name)
-            except ValueError:
-                raise ValueError(
-                    'Field name "{0}" defined in connection settings, but not '
-                    'found in "{1}"'.format(field_name, path))
+        if connection_settings.use_fields == ALL:
+            self.header_map = dict(zip(header, xrange(len(header))))
+        else:
+            for field_name in connection_settings.use_fields:
+                try:
+                    self.header_map[field_name] = header.index(field_name)
+                except ValueError:
+                    raise ValueError(
+                        'Field name "{0}" defined in connection settings, but '
+                        'not found in "{1}"'.format(field_name, path))
 
     def __iter__(self):
         for csv_entry in self.reader:

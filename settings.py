@@ -6,7 +6,6 @@ from utils import path_from_appdata_or_input
 APP_NAME = 'zmsavings'
 GOAL_CONN_SETTINGS = CsvConnectionSettings(
     path=path_from_appdata_or_input(APP_NAME, 'goalsFile', 'CSV with goals'),
-    use_fields=['goalName', 'accountName', 'total']
 )
 TRANSACTIONS_CONN_SETTINGS = CsvConnectionSettings(
     path=path_from_appdata_or_input(
