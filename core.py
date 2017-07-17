@@ -15,6 +15,9 @@ def main():
         if t.date >= goal_transactions.goal.start_date:
             goal_transactions.transactions.append(t)
 
+    for gt in account_name_to_gt.values():
+        gt.calculate_progressive_total()
+
 
 if __name__ == '__main__':
     main()

@@ -30,7 +30,7 @@ class GoalConnector(CsvConnector):
     model2csv_fields = dict(
         name='goalName',
         account_name='accountName',
-        total='total',
+        total=Converter.to_rubles('total'),
         start_date=Converter.to_datetime('startDate', fmt='%d.%m.%Y'),
     )
 
@@ -41,6 +41,6 @@ class TransactionConnector(CsvConnector):
         date=Converter.to_datetime('date', fmt="%Y-%m-%d"),
         outcome_account_name='outcomeAccountName',
         income_account_name='incomeAccountName',
-        outcome='outcome',
-        income='income',
+        outcome=Converter.to_rubles('outcome'),
+        income=Converter.to_rubles('income'),
     )
