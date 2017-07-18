@@ -1,3 +1,4 @@
+from itertools import izip_longest, tee
 import os
 # Third-party imports
 import appdirs
@@ -43,3 +44,11 @@ def path_from_appdata_or_input(app_name, appdata_name, file_description):
     with open(appdata_file, 'w') as f:
         f.write(path)
     return path
+
+
+# Based on https://docs.python.org/2.7/library/itertools.html#recipes
+def pairwise(iterable):
+    """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
+    a, b = tee(iterable)
+    next(b, None)
+    return izip_longest(a, b)

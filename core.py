@@ -17,6 +17,7 @@ def main():
 
     for gt in account_name_to_gt.values():
         gt.calculate_progressive_total()
+        gt.fill_in_blanks()
 
 
 if __name__ == '__main__':
