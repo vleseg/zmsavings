@@ -22,12 +22,13 @@ class GoalTransactions(object):
         total = Money(0, 'RUR')
 
         for t in self.transactions:
-            # In one transaction there is always either a meaningful income or
-            # outcome. The other value is always zero.
-            if t.income == Money(0, 'RUR'):
-                total -= t.outcome
-            else:
+            # At this point for every transaction goal's account is either
+            # an income account (money were put) or an outcome account (money
+            # were withdrawn)
+            if self.goal.account_name == t.income_account_name:
                 total += t.income
+            else:
+                total -= t.outcome
 
             self.progressive_total.append(ProgressiveTotalPoint(total, t.date))
 

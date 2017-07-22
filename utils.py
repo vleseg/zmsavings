@@ -2,6 +2,16 @@ from itertools import izip_longest, tee
 import os
 # Third-party imports
 import appdirs
+# Project imports
+from meta.constants import APP_NAME
+
+
+def get_user_data_dir():
+    data_dir = appdirs.user_data_dir(APP_NAME)
+    if not os.path.isdir(data_dir):
+        os.makedirs(data_dir)
+
+    return data_dir
 
 
 def read_yes_no(prompt):
@@ -23,14 +33,10 @@ def read_path(prompt):
         print 'File does not exist: {0}'.format(s)
 
 
-def path_from_appdata_or_input(app_name, appdata_name, file_description):
+def path_from_appdata_or_input(appdata_name, file_description):
     print '{0}: loading file...'.format(file_description)
 
-    data_dir = appdirs.user_data_dir(app_name)
-    appdata_file = os.path.join(data_dir, appdata_name)
-    if not os.path.isdir(data_dir):
-        os.makedirs(data_dir)
-
+    appdata_file = os.path.join(get_user_data_dir(), appdata_name)
     if os.path.isfile(appdata_file):
         with open(appdata_file, 'r') as f:
             path = f.read().strip()
