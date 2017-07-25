@@ -1,6 +1,6 @@
 import unicodecsv as csv
 # Project imports
-from meta.constants import ALL
+from zmsavings.meta.constants import ALL
 
 
 class CsvSource(object):

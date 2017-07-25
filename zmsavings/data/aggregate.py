@@ -3,7 +3,7 @@ from datetime import timedelta
 import attr
 from money import Money
 # Project imports
-from utils import pairwise
+from zmsavings.utils import pairwise
 
 
 @attr.s

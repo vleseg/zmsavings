@@ -1,7 +1,7 @@
 # Project imports
-import settings
-from datasource import CsvSource
 from converter import Converter
+from datasource import CsvSource
+from zmsavings import settings
 
 
 class CsvConnector(object):
