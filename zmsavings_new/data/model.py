@@ -1,7 +1,21 @@
-class Goal(object):
+class BaseModel(object):
+    @staticmethod
+    def select(predicate):
+        pass
+
+
+class Account(BaseModel):
+    pass
+
+
+class Goal(BaseModel):
     def all(self):
         pass
 
 
-class GoalTransaction(object):
+class ProgressiveTotal(BaseModel):
+    pass
+
+
+class Transaction(BaseModel):
     pass
