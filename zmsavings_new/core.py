@@ -13,5 +13,9 @@ def _select_transactions_for_goal(goal):
 def main():
     progressive_totals = []
     for g in Goal.all():
-        progressive_totals.append(ProgressiveTotal(g))
         transactions = _select_transactions_for_goal(g)
+        progressive_totals.append(ProgressiveTotal(g, transactions))
+
+    for pt in progressive_totals:
+        pt.calculate()
+        pt.visualize()
