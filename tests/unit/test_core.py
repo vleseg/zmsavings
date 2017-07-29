@@ -2,7 +2,6 @@
 from mock import call, Mock, patch
 # Project imports
 from zmsavings_new import core
-from zmsavings_new.data.model import Account, Goal, Transaction
 
 
 @patch('zmsavings_new.core.Goal')
@@ -24,12 +23,12 @@ class TestMain(object):
             call('goal_1'), call('goal_2'), call('goal_3')]
 
 
-@patch('zmsavings_new.core.Account', spec_set=Account)
-@patch('zmsavings_new.core.Transaction', spec_set=Transaction)
+@patch('zmsavings_new.core.Account', spec_set=True)
+@patch('zmsavings_new.core.Transaction', spec_set=True)
 class TestSelectTransactions(object):
     def test_selects_acc_and_then_its_transactions_by_cryptic_callables(
             self, m_tr, m_account):
-        m_account.select = Mock()
+        m_account.select = Mock(return_value=['account'])
         m_tr.select = Mock(return_value=['tr_1', 'tr_2', 'tr_3'])
 
         result = core._select_transactions_for_goal('goal')

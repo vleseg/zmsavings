@@ -1,21 +1,33 @@
+import attr
+
+
 class BaseModel(object):
+    @classmethod
+    def select(cls, func):
+        return filter(func, cls.all())
+
     @staticmethod
-    def select(predicate):
+    def all():
         pass
 
 
+@attr.s
 class Account(BaseModel):
-    pass
+    name = attr.ib()
 
 
+@attr.s
 class Goal(BaseModel):
-    def all(self):
-        pass
+    account_name = attr.ib()
+    start_date = attr.ib()
 
 
 class ProgressiveTotal(BaseModel):
     pass
 
 
+@attr.s
 class Transaction(BaseModel):
-    pass
+    income_account = attr.ib()
+    outcome_account = attr.ib()
+    date = attr.ib()

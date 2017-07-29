@@ -3,10 +3,11 @@ from zmsavings_new.data.model import (
 
 
 def _select_transactions_for_goal(goal):
-    account = Account.select(lambda a: a.name == goal.account_name)
+    account = Account.select(lambda a: a.name == goal.account_name)[0]
     return Transaction.select(
-        lambda t: (t.income_account == account or t.outcome_account == account)
-                  and t.date >= goal.start_date)
+        lambda t:
+            (t.income_account == account or t.outcome_account == account) and
+            t.date >= goal.start_date)
 
 
 def main():
