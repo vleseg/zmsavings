@@ -1,14 +1,19 @@
+# Third-party imports
 import attr
+# Project imports
+from connector import GoalConnector
 
 
 class BaseModel(object):
+    _connector = None
+
     @classmethod
     def select(cls, func):
         return filter(func, cls.all())
 
-    @staticmethod
-    def all():
-        pass
+    @classmethod
+    def all(cls):
+        return cls._connector.all()
 
 
 @attr.s
@@ -18,6 +23,9 @@ class Account(BaseModel):
 
 @attr.s
 class Goal(BaseModel):
+    _connector = GoalConnector()
+
+    # Fields
     account_name = attr.ib()
     start_date = attr.ib()
 
