@@ -1,0 +1,2 @@
+class CsvConnectionSettings(object):
+    pass

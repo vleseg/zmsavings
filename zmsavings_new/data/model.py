@@ -13,7 +13,7 @@ class BaseModel(object):
 
     @classmethod
     def all(cls):
-        return cls._connector.all()
+        return (cls(**fields) for fields in cls._connector.all())
 
 
 @attr.s
