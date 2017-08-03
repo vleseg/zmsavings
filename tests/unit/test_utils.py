@@ -2,7 +2,7 @@ import os
 # Third-party imports
 from mock import mock_open, patch
 # Project imports
-from zmsavings_new.utils import path_from_appdata_or_input
+from zmsavings_new.utils import get_user_data_dir, path_from_appdata_or_input
 
 
 class TestPathFromAppdataOrInput(object):
@@ -35,3 +35,21 @@ class TestPathFromAppdataOrInput(object):
 
     def test_saves_correct_path_to_pointer_file(self):
         pass
+
+
+@patch('zmsavings_new.utils.os', spec_set=True)
+@patch('zmsavings_new.utils.appdirs', spec_set=True)
+class TestGetUserDataDir(object):
+    def test_gets_user_data_dir_from_appdirs_with_app_name(self, m_appdirs, _):
+        result = get_user_data_dir()
+        m_appdirs.user_data_dir.assert_called_once_with('ZmSavings')
+
+        assert result == m_appdirs.user_data_dir.return_value
+
+    def test_if_user_data_dir_does_not_exist_creates_it(self, m_appdirs, m_os):
+        m_os.path.isdir.return_value = False
+        result = get_user_data_dir()
+        m_appdirs_rv = m_appdirs.user_data_dir.return_value
+
+        m_os.makedirs.assert_called_once_with(m_appdirs_rv)
+        assert result == m_appdirs_rv
