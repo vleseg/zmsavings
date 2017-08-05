@@ -5,21 +5,22 @@ from zmsavings_new.utils import path_from_appdata_or_input
 
 
 class CsvConnector(object):
-    pass
+    _pointer_filename = ''
+
+    def __init__(self):
+        self._data = None
+
+    @property
+    def _source(self):
+        if self._data is None:
+            path_to_csv = path_from_appdata_or_input(self._pointer_filename)
+            with open(path_to_csv, 'rb') as f:
+                self._data = list(csv.reader(f))
+        return self._data
+
+    def all(self):
+        return iter(self._source)
 
 
 class GoalConnector(CsvConnector):
     _pointer_filename = 'pathToGoalsCsv'
-
-    def __init__(self):
-        self._reader = None
-
-    @property
-    def _source(self):
-        if self._reader is None:
-            self._reader = csv.reader(
-                path_from_appdata_or_input(self._pointer_filename))
-        return self._reader
-
-    def all(self):
-        pass

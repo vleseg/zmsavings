@@ -95,19 +95,21 @@ class TestPathFromAppdataOrInput(object):
 @patch('zmsavings_new.utils.os', spec_set=True)
 @patch('zmsavings_new.utils.appdirs', spec_set=True)
 class TestGetUserDataDir(object):
-    def test_gets_user_data_dir_from_appdirs_with_app_name(self, m_appdirs, _):
+    def test_gets_user_data_dir_from_appdirs_with_app_name(self,
+                                                           mock_appdirs, _):
         result = get_or_create_user_data_dir()
-        m_appdirs.user_data_dir.assert_called_once_with('ZmSavings')
+        mock_appdirs.user_data_dir.assert_called_once_with('ZmSavings')
 
-        assert result == m_appdirs.user_data_dir.return_value
+        assert result == mock_appdirs.user_data_dir.return_value
 
-    def test_if_user_data_dir_does_not_exist_creates_it(self, m_appdirs, m_os):
-        m_os.path.isdir.return_value = False
+    def test_if_user_data_dir_does_not_exist_creates_it(self,
+                                                        mock_appdirs, mock_os):
+        mock_os.path.isdir.return_value = False
         result = get_or_create_user_data_dir()
-        m_appdirs_rv = m_appdirs.user_data_dir.return_value
+        mock_appdirs_rv = mock_appdirs.user_data_dir.return_value
 
-        m_os.makedirs.assert_called_once_with(m_appdirs_rv)
-        assert result == m_appdirs_rv
+        mock_os.makedirs.assert_called_once_with(mock_appdirs_rv)
+        assert result == mock_appdirs_rv
 
 
 @patch('zmsavings_new.utils.print_function')
