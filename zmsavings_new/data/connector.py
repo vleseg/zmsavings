@@ -19,7 +19,8 @@ class CsvConnector(object):
         return self._data
 
     def all(self):
-        return iter(self._source)
+        headers = self._source[0]
+        return (dict(zip(headers, row)) for row in self._source[1:])
 
 
 class GoalConnector(CsvConnector):
