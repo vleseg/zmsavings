@@ -1,7 +1,7 @@
 # Third-party imports
 import unicodecsv as csv
 # Project imports
-from zmsavings_new.utils import path_from_appdata_or_input
+from utils import path_from_appdata_or_input
 
 
 class CsvConnector(object):

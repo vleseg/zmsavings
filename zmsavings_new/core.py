@@ -1,5 +1,4 @@
-from zmsavings_new.data.model import (
-    Account, Goal, ProgressiveTotal, Transaction)
+from data.model import Account, Goal, ProgressiveTotal, Transaction
 
 
 def _select_transactions_for_goal(goal):
@@ -19,3 +18,7 @@ def main():
     for pt in progressive_totals:
         pt.calculate()
         pt.visualize()
+
+
+if __name__ == '__main__':
+    main()
