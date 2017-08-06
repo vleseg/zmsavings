@@ -9,18 +9,28 @@ import pytest
 
 
 class PopenWrapper(object):
-    def __init__(self, command):
-        self._process = Popen(
-            command, stdout=PIPE, stderr=PIPE, stdin=PIPE, bufsize=1)
+    _popen_kwargs = dict(stdout=PIPE, stderr=PIPE, stdin=PIPE)
 
-    def read(self):
-        stdout, stderr = self._process.communicate()
+    def __init__(self, command, stdin, expected_stdout):
+        self._command = command
+        self._stdin = stdin
+        self._expected_stdout = expected_stdout
+
+    def invoke_and_test(self):
+        process = Popen(self._command, **self._popen_kwargs)
+
+        stdin_as_str = '\n'.join(self._stdin)
+        stdout, stderr = process.communicate(stdin_as_str)
         if stderr:
-            raise AssertionError(
+            error_message = (
                 'Exception raised inside the wrapped process:\n'
-                '============================================\n' + stderr
+                '============================================\n' + stderr +
+                '\n============================================\n' +
+                'Output before the error:\n' +
+                '============================================\n' + stdout
             )
-        return stdout
+            raise AssertionError(error_message)
+        assert self._expected_stdout == stdout.splitlines()
 
 
 @pytest.fixture
@@ -42,23 +52,24 @@ def backup_and_restore_user_data():
     shutil.rmtree(temp_dir)
 
 
-# todo: in wrapper write to stdin everything at once and read all stdout at once
-# todo: in test, however, make it look like we everything consequently
 @pytest.mark.usefixtures('backup_and_restore_user_data')
 def test_reads_paths_to_csv_files_from_stdin_and_visualizes_data():
     # zmsavings can be invoked from command-line (path to the core.py should
     # be passed as argument to the Python interpreter
-    path_to_core_py = os.path.join(os.path.dirname(
-        os.path.dirname(__file__)), 'zmsavings_new', 'core.py')
+    test_root = os.path.dirname(__file__)
+    path_to_core_py = os.path.join(
+        os.path.dirname(test_root), 'zmsavings_new', 'core.py')
 
-    process = PopenWrapper(['python', path_to_core_py])
+    stdin = [
+        # Provide path to CSV file with goals, when requested
+        os.path.join(test_root, 'data', 'goals.csv'),
+    ]
+    stdout = [
+        # Since userdata dir is empty, we don't know, where input files are, so
+        # we should ask user for path to file with goals
+        'Enter correct path to CSV file with goals (Ctrl+C to exit) '
+    ]
 
-    # Since userdata dir is empty, we don't know, where input files are, so
-    # we should ask user for path to file with goals...
-    out = process.read()
-    assert re.match(
-        r'^Enter correct path to CSV file with goals \(Ctrl\+C to exit\): $',
-        out)
-
-    # ...and read his input
-    pytest.fail('TBD')
+    process = PopenWrapper(
+        ['python', path_to_core_py], stdin=stdin, expected_stdout=stdout)
+    process.invoke_and_test()
