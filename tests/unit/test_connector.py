@@ -1,3 +1,4 @@
+from datetime import datetime
 # Third-party imports
 from mock import mock_open, patch
 import pytest
@@ -67,3 +68,16 @@ class TestGoalConnectorAll(object):
             {'ship_name': 'Lux Aeterna', 'ship_class': 'wanderer',
              'tiryampampation_type': 'warp'}
         ]
+
+    def test_converts_field_names_from_csv_to_field_names_of_model(self,
+                                                                   mocks):
+        mocks.reader.return_value = [
+            ['accountName', 'goalName', 'total', 'start_date'],
+            ['foo', 'bar', '1000', '01.01.2016']
+        ]
+        gc = GoalConnector()
+
+        actual_dict_keys = sorted(list(gc.all())[0].keys())
+        assert actual_dict_keys == sorted(
+            ['account_name', 'name', 'start_date', 'total']
+        )

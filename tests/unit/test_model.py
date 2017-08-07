@@ -20,22 +20,28 @@ class TestGoal(object):
     def test_connector_initialized_on_class_declared(self, _):
         assert isinstance(Goal._connector, GoalConnector)
 
-    def test_all_calls_all_of_underlying_connector(self, m_all):
+    def test_all_calls_all_of_underlying_connector(self, mock_all):
         Goal.all()
-        assert m_all.called
+        assert mock_all.called
 
-    def test_returns_generator(self, _):
+    def test_all_returns_generator(self, _):
         result = Goal.all()
         assert isinstance(result, types.GeneratorType)
 
-    def test_returns_instance_parametrized_by_value_from_connector(self, m_all):
-        m_all.return_value = [
-            {'account_name': 'foo', 'start_date': datetime(2010, 1, 1)},
-            {'account_name': 'bar', 'start_date': datetime(2010, 2, 2)},
-            {'account_name': 'abc', 'start_date': datetime(2010, 3, 3)}
+    def test_all_initializes_instances_with_data_from_connector(self, mock_all):
+        mock_all.return_value = [
+            {'account_name': 'foo', 'name': 'bar', 'total': 1000,
+             'start_date': datetime(2010, 1, 1)},
+            {'account_name': 'biz', 'name': 'baz', 'total': 2000,
+             'start_date': datetime(2010, 2, 2)},
+            {'account_name': 'abc', 'name': 'xyz', 'total': 3000,
+             'start_date': datetime(2010, 3, 3)}
         ]
         assert list(Goal.all()) == [
-            Goal(account_name='foo', start_date=datetime(2010, 1, 1)),
-            Goal(account_name='bar', start_date=datetime(2010, 2, 2)),
-            Goal(account_name='abc', start_date=datetime(2010, 3, 3))
+            Goal(account_name='foo', start_date=datetime(2010, 1, 1),
+                 name='bar', total=1000),
+            Goal(account_name='biz', start_date=datetime(2010, 2, 2),
+                 name='baz', total=2000),
+            Goal(account_name='abc', start_date=datetime(2010, 3, 3),
+                 name='xyz', total=3000)
         ]

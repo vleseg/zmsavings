@@ -27,7 +27,9 @@ class Goal(BaseModel):
 
     # Fields
     account_name = attr.ib()
+    name = attr.ib()
     start_date = attr.ib()
+    total = attr.ib()
 
 
 class ProgressiveTotal(BaseModel):
@@ -36,6 +38,6 @@ class ProgressiveTotal(BaseModel):
 
 @attr.s
 class Transaction(BaseModel):
+    date = attr.ib()
     income_account = attr.ib()
     outcome_account = attr.ib()
-    date = attr.ib()

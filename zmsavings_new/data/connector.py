@@ -6,6 +6,9 @@ from utils import path_from_appdata_or_input
 
 class CsvConnector(object):
     _pointer_filename = ''
+    _csv2model_fields = {
+
+    }
 
     def __init__(self):
         self._data = None
@@ -19,9 +22,17 @@ class CsvConnector(object):
         return self._data
 
     def all(self):
-        headers = self._source[0]
+        headers = [
+            self._csv2model_fields.get(csv_field_header, csv_field_header)
+            for csv_field_header in self._source[0]
+        ]
         return (dict(zip(headers, row)) for row in self._source[1:])
 
 
 class GoalConnector(CsvConnector):
     _pointer_filename = 'pathToGoalsCsv'
+    _csv2model_fields = dict(
+        accountName='account_name',
+        goalName='name',
+        startDate='start_date',
+    )
