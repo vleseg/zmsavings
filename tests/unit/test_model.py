@@ -3,7 +3,7 @@ import types
 # Third-party imports
 from mock import patch
 # Project imports
-from zmsavings_new.data.model import BaseModel, Goal
+from zmsavings_new.data.model import Account, AdHocModel, BaseModel, Goal
 from zmsavings_new.data.connector import GoalConnector
 
 
@@ -45,3 +45,10 @@ class TestGoal(object):
             Goal(account_name='abc', start_date=datetime(2010, 3, 3),
                  name='xyz', total=3000)
         ]
+
+
+class TestAccount(object):
+    def test_is_an_ad_hoc_model(self):
+        a = Account('my account')
+
+        assert isinstance(a, AdHocModel)

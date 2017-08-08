@@ -42,6 +42,7 @@ def correct_transactions(accounts):
 
 
 def test_select_transactions_by_account_and_date(correct_transactions):
-    goal = Goal(account_name='correct', start_date=date(2017, 2, 2))
+    goal = Goal(name='my goal', account_name='correct', total=1000,
+                start_date=date(2017, 2, 2))
     result = _select_transactions_for_goal(goal)
     assert result == correct_transactions

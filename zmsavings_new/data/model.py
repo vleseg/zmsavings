@@ -16,8 +16,12 @@ class BaseModel(object):
         return (cls(**fields) for fields in cls._connector.all())
 
 
+class AdHocModel(object):
+    pass
+
+
 @attr.s
-class Account(BaseModel):
+class Account(AdHocModel):
     name = attr.ib()
 
 
