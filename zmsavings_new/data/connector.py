@@ -4,11 +4,14 @@ import unicodecsv as csv
 from utils import path_from_appdata_or_input
 
 
+class AdHocConnector(object):
+    def store(self, iterm):
+        pass
+
+
 class CsvConnector(object):
     _pointer_filename = ''
-    _csv2model_fields = {
-
-    }
+    _csv2model_fields = {}
 
     def __init__(self):
         self._data = None
@@ -32,7 +35,7 @@ class CsvConnector(object):
 class GoalConnector(CsvConnector):
     _pointer_filename = 'pathToGoalsCsv'
     _csv2model_fields = dict(
-        accountName='account_name',
+        accountName='account',
         goalName='name',
         startDate='start_date',
     )

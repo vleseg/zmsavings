@@ -1,7 +1,7 @@
 # Third-party imports
 import attr
 # Project imports
-from connector import GoalConnector
+from connector import AdHocConnector, GoalConnector
 
 
 class BaseModel(object):
@@ -16,8 +16,11 @@ class BaseModel(object):
         return (cls(**fields) for fields in cls._connector.all())
 
 
-class AdHocModel(object):
-    pass
+class AdHocModel(BaseModel):
+    _connector = AdHocConnector()
+
+    def __attrs_post_init__(self):
+        self._connector.store(self)
 
 
 @attr.s
@@ -30,7 +33,7 @@ class Goal(BaseModel):
     _connector = GoalConnector()
 
     # Fields
-    account_name = attr.ib()
+    account = attr.ib(convert=Account)
     name = attr.ib()
     start_date = attr.ib()
     total = attr.ib()

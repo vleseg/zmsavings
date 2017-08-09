@@ -79,5 +79,5 @@ class TestGoalConnectorAll(object):
 
         actual_dict_keys = sorted(list(gc.all())[0].keys())
         assert actual_dict_keys == sorted(
-            ['account_name', 'name', 'start_date', 'total']
+            ['account', 'name', 'start_date', 'total']
         )
