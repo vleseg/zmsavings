@@ -67,13 +67,27 @@ class TestAccount(object):
 
     def test_cannot_be_initialized_without_name(self):
         with pytest.raises(TypeError):
-            a = Account()
+            Account()
         a = Account('my account')
 
         assert a.name == 'my account'
 
-    @patch.object(Account._connector, 'store')
-    def test_stores_new_instance_to_ad_hoc_connector(self, mock_store):
+    @patch.object(Account, '_connector')
+    def test_stores_new_instance_to_ad_hoc_connector(self, mock_connector):
         a = Account('my account')
 
-        mock_store.assert_called_once_with(a)
+        mock_connector.store.assert_called_once_with(a)
+
+    @patch.object(Account, '_connector')
+    def test_all_returns_all_previously_stored_models(self, mock_connector):
+        mock_container = []
+        mock_connector.store = lambda item: mock_container.append(item)
+        mock_connector.all.return_value = mock_container
+
+        Account('my account')
+        Account('your account')
+        Account('our account')
+
+        assert [a.name for a in Account.all()] == [
+            'my account', 'your account', 'our account'
+        ]

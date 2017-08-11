@@ -3,7 +3,8 @@ from datetime import datetime
 from mock import mock_open, patch
 import pytest
 # Project imports
-from zmsavings_new.data.connector import CsvConnector, GoalConnector
+from zmsavings_new.data.connector import (
+    AdHocConnector, CsvConnector, GoalConnector)
 
 
 @pytest.fixture
@@ -81,3 +82,20 @@ class TestGoalConnectorAll(object):
         assert actual_dict_keys == sorted(
             ['account', 'name', 'start_date', 'total']
         )
+
+
+class TestAdHocConnector(object):
+    def test_store_stores_item_in_the_inner_container(self):
+        ahc = AdHocConnector()
+        ahc.store('something')
+        ahc.store('something else')
+
+        assert ahc._container == ['something', 'something else']
+
+    def test_all_returns_iterator_over_items_in_container(self):
+        ahc = AdHocConnector()
+        ahc.store('one')
+        ahc.store('two')
+        ahc.store('three')
+
+        assert list(ahc.all()) == ['one', 'two', 'three']

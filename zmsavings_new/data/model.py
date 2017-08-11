@@ -22,6 +22,10 @@ class AdHocModel(BaseModel):
     def __attrs_post_init__(self):
         self._connector.store(self)
 
+    @classmethod
+    def all(cls):
+        return cls._connector.all()
+
 
 @attr.s
 class Account(AdHocModel):

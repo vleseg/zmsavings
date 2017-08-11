@@ -5,8 +5,14 @@ from utils import path_from_appdata_or_input
 
 
 class AdHocConnector(object):
-    def store(self, iterm):
-        pass
+    def __init__(self):
+        self._container = []
+
+    def all(self):
+        return iter(self._container)
+
+    def store(self, item):
+        self._container.append(item)
 
 
 class CsvConnector(object):

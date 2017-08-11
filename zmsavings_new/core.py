@@ -2,7 +2,7 @@ from data.model import Account, Goal, ProgressiveTotal, Transaction
 
 
 def _select_transactions_for_goal(goal):
-    account = Account.select(lambda a: a.name == goal.account_name)[0]
+    account = Account.select(lambda a: a.name == goal.account.name)[0]
     return Transaction.select(
         lambda t:
             (t.income_account == account or t.outcome_account == account) and

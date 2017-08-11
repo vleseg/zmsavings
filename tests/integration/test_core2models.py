@@ -10,26 +10,29 @@ from zmsavings_new.core import (
 @pytest.fixture()
 def accounts():
     patcher = patch.object(Account, 'all')
-    m_all = patcher.start()
+    mock_all = patcher.start()
+    patch.object(Account, '_connector').start()
+
     correct_account = Account(name='correct')
     incorrect_account = Account(name='incorrect')
-    m_all.return_value = [correct_account, incorrect_account]
+    mock_all.return_value = [correct_account, incorrect_account]
 
-    return correct_account, incorrect_account
+    yield correct_account, incorrect_account
+    patcher.stop()
 
 
 @pytest.fixture()
 def correct_transactions(accounts):
     correct_account, incorrect_account = accounts
     patcher = patch.object(Transaction, 'all')
-    m_all = patcher.start()
+    mock_all = patcher.start()
     correct_transactions = [
         Transaction(income_account=correct_account,
                     outcome_account=incorrect_account, date=date(2017, 3, 3)),
         Transaction(income_account=incorrect_account,
                     outcome_account=correct_account, date=date(2017, 3, 3))
     ]
-    m_all.return_value = [
+    mock_all.return_value = [
         Transaction(income_account=incorrect_account,
                     outcome_account=incorrect_account, date=date(2017, 3, 3)),
         correct_transactions[0],
@@ -42,7 +45,7 @@ def correct_transactions(accounts):
 
 
 def test_select_transactions_by_account_and_date(correct_transactions):
-    goal = Goal(name='my goal', account_name='correct', total=1000,
+    goal = Goal(name='my goal', account='correct', total=1000,
                 start_date=date(2017, 2, 2))
     result = _select_transactions_for_goal(goal)
     assert result == correct_transactions
