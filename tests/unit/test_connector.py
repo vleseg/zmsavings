@@ -1,4 +1,3 @@
-from datetime import datetime
 # Third-party imports
 from mock import mock_open, patch
 import pytest
@@ -99,3 +98,14 @@ class TestAdHocConnector(object):
         ahc.store('three')
 
         assert list(ahc.all()) == ['one', 'two', 'three']
+
+    def test_if_initialized_as_unique_does_not_store_duplicate_values(self):
+        ahc = AdHocConnector(unique=True)
+        ahc.store("unique")
+        ahc.store('duplicate')
+        ahc.store('another unique')
+        ahc.store('duplicate')
+
+        stored = list(ahc.all())
+        assert len(stored) == 3
+        assert stored.count('duplicate') == 1

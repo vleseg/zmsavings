@@ -4,15 +4,17 @@ import unicodecsv as csv
 from utils import path_from_appdata_or_input
 
 
-# TODO: make _container set; rename class accordingly
 class AdHocConnector(object):
-    def __init__(self):
+    def __init__(self, unique=False):
+        self._unique = unique
         self._container = []
 
     def all(self):
         return iter(self._container)
 
     def store(self, item):
+        if self._unique and item in self._container:
+            return
         self._container.append(item)
 
 

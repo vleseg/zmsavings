@@ -17,7 +17,7 @@ class BaseModel(object):
 
 
 class AdHocModel(BaseModel):
-    _connector = AdHocConnector()
+    _connector = AdHocConnector(unique=True)
 
     def __attrs_post_init__(self):
         self._connector.store(self)
