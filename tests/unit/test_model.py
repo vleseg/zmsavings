@@ -1,10 +1,12 @@
+# TODO: break into separate files
 from datetime import datetime
 import types
 # Third-party imports
 from mock import patch
 import pytest
 # Project imports
-from zmsavings_new.data.model import Account, AdHocModel, BaseModel, Goal
+from zmsavings_new.data.model import (
+    Account, AdHocModel, BaseModel, Goal, Transaction)
 from zmsavings_new.data.connector import GoalConnector
 
 
@@ -54,9 +56,7 @@ class TestGoal(object):
     def test_init_creates_account_instance_for_passed_name(self):
         goals = list(Goal.all())
 
-        assert [g.account for g in goals] == [
-            Account(name='foo'), Account(name='biz'), Account(name='abc')
-        ]
+        assert [g.account.name for g in goals] == ['foo', 'biz', 'abc']
 
 
 class TestAccount(object):
@@ -90,4 +90,28 @@ class TestAccount(object):
 
         assert [a.name for a in Account.all()] == [
             'my account', 'your account', 'our account'
+        ]
+
+
+class TestTransaction():
+    def setup(self):
+        self._mock_all = patch.object(Transaction._connector, 'all').start()
+        self._mock_all.return_value = [
+            {'income_account': 'foo', 'outcome_account': 'bar', 'income': 1000,
+             'outcome': 1000, 'date': datetime(2010, 1, 1)},
+            {'income_account': 'bar', 'outcome_account': 'foo', 'income': 2000,
+             'outcome': 2100, 'date': datetime(2010, 2, 2)},
+            {'income_account': 'bar', 'outcome_account': '', 'income': 3000,
+             'outcome': 0, 'date': datetime(2010, 3, 3)}
+        ]
+
+    def test_all_initializes_instances_with_data_from_connector(self):
+        transactions = list(Transaction.all())
+
+        assert [t.income_account for t in transactions] == ['foo', 'bar', 'bar']
+        assert [t.outcome_account for t in transactions] == ['bar', 'foo', '']
+        assert [t.income for t in transactions] == [1000, 2000, 3000]
+        assert [t.outcome for t in transactions] == [1000, 2100, 0]
+        assert [t.date for t in transactions] == [
+            datetime(2010, 1, 1), datetime(2010, 2, 2), datetime(2010, 3, 3)
         ]

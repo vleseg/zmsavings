@@ -1,7 +1,7 @@
 # Third-party imports
 import attr
 # Project imports
-from connector import AdHocConnector, GoalConnector
+from connector import AdHocConnector, GoalConnector, TransactionConnector
 
 
 class BaseModel(object):
@@ -49,6 +49,10 @@ class ProgressiveTotal(BaseModel):
 
 @attr.s
 class Transaction(BaseModel):
+    _connector = TransactionConnector()
+
     date = attr.ib()
     income_account = attr.ib()
     outcome_account = attr.ib()
+    income = attr.ib()
+    outcome = attr.ib()

@@ -4,6 +4,7 @@ import unicodecsv as csv
 from utils import path_from_appdata_or_input
 
 
+# TODO: make _container set; rename class accordingly
 class AdHocConnector(object):
     def __init__(self):
         self._container = []
@@ -30,6 +31,7 @@ class CsvConnector(object):
                 self._data = list(csv.reader(f))
         return self._data
 
+    # TODO: extract getting headers
     def all(self):
         headers = [
             self._csv2model_fields.get(csv_field_header, csv_field_header)
@@ -45,3 +47,7 @@ class GoalConnector(CsvConnector):
         goalName='name',
         startDate='start_date',
     )
+
+
+class TransactionConnector(CsvConnector):
+    pass
