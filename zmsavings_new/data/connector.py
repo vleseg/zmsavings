@@ -19,8 +19,9 @@ class AdHocConnector(object):
 
 
 class CsvConnector(object):
-    _pointer_filename = ''
     _csv2model_fields = {}
+    _pointer_filename = ''
+    _use_all_csv_fields = True
 
     def __init__(self):
         self._data = None
@@ -33,23 +34,39 @@ class CsvConnector(object):
                 self._data = list(csv.reader(f))
         return self._data
 
-    # TODO: extract getting headers
+    def _get_model_field_to_idx_mapping(self):
+        result = {}
+        for i, csv_field_header in enumerate(self._source[0]):
+            if csv_field_header in self._csv2model_fields:
+                result[self._csv2model_fields[csv_field_header]] = i
+            elif self._use_all_csv_fields:  # same field name in csv and model
+                result[csv_field_header] = i
+
+        return result
+
     def all(self):
-        headers = [
-            self._csv2model_fields.get(csv_field_header, csv_field_header)
-            for csv_field_header in self._source[0]
-        ]
-        return (dict(zip(headers, row)) for row in self._source[1:])
+        header2idx = self._get_model_field_to_idx_mapping()
+
+        for row in self._source[1:]:
+            yield dict((header, row[idx]) for header, idx in header2idx.items())
 
 
 class GoalConnector(CsvConnector):
-    _pointer_filename = 'pathToGoalsCsv'
     _csv2model_fields = dict(
         accountName='account',
         goalName='name',
         startDate='start_date',
     )
+    _pointer_filename = 'pathToGoalsCsv'
 
 
 class TransactionConnector(CsvConnector):
-    pass
+    _csv2model_fields = dict(
+        date='date',
+        outcomeAccountName='outcome_account',
+        outcome='outcome',
+        incomeAccountName='income_account',
+        income='income',
+    )
+    _pointer_filename = 'pathToTransactionsCsv'
+    _use_all_csv_fields = False

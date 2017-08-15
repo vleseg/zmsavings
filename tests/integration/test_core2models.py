@@ -27,16 +27,16 @@ def correct_transactions(accounts):
     patcher = patch.object(Transaction, 'all')
     mock_all = patcher.start()
     correct_transactions = [
-        Transaction(income_account=correct_account,
+        Transaction(income_account=correct_account, income=1000, outcome=0,
                     outcome_account=incorrect_account, date=date(2017, 3, 3)),
-        Transaction(income_account=incorrect_account,
+        Transaction(income_account=incorrect_account, income=2000, outcome=0,
                     outcome_account=correct_account, date=date(2017, 3, 3))
     ]
     mock_all.return_value = [
-        Transaction(income_account=incorrect_account,
+        Transaction(income_account=incorrect_account, income=0, outcome=111,
                     outcome_account=incorrect_account, date=date(2017, 3, 3)),
         correct_transactions[0],
-        Transaction(income_account=correct_account,
+        Transaction(income_account=correct_account, income=0, outcome=222,
                     outcome_account=incorrect_account, date=date(2017, 1, 1)),
         correct_transactions[1]
     ]

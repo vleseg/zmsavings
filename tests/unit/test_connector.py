@@ -3,7 +3,7 @@ from mock import mock_open, patch
 import pytest
 # Project imports
 from zmsavings_new.data.connector import (
-    AdHocConnector, CsvConnector, GoalConnector)
+    AdHocConnector, CsvConnector, GoalConnector, TransactionConnector)
 
 
 @pytest.fixture
@@ -24,7 +24,6 @@ def mocks():
     return fixture_obj
 
 
-@pytest.mark.userfixtures('mocks')
 class TestGoalConnector(object):
     def test_goal_connector_is_a_csv_connector(self):
         assert isinstance(GoalConnector(), CsvConnector)
@@ -50,7 +49,6 @@ class TestGoalConnector(object):
         assert gc._source == gc._data
 
 
-@pytest.mark.userfixtures('mocks')
 class TestGoalConnectorAll(object):
     def test_all_returns_iterable_of_dicts_formed_from_read_csv_data(self,
                                                                      mocks):
@@ -72,7 +70,7 @@ class TestGoalConnectorAll(object):
     def test_converts_field_names_from_csv_to_field_names_of_model(self,
                                                                    mocks):
         mocks.reader.return_value = [
-            ['accountName', 'goalName', 'total', 'start_date'],
+            ['accountName', 'goalName', 'total', 'startDate'],
             ['foo', 'bar', '1000', '01.01.2016']
         ]
         gc = GoalConnector()
@@ -109,3 +107,18 @@ class TestAdHocConnector(object):
         stored = list(ahc.all())
         assert len(stored) == 3
         assert stored.count('duplicate') == 1
+
+
+class TestTransactionConnector(object):
+    def test_use_only_declared_csv_fields(self, mocks):
+        tc = TransactionConnector()
+        mocks.reader.return_value = [
+            ['date', 'do not use me', 'outcomeAccountName', 'pls no', 'outcome',
+             'incomeAccountName', 'haha', 'no no no', 'income'],
+            ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'hhh', 'iii'],
+        ]
+        res_keys, res_values = zip(*next(tc.all()).items())
+
+        assert sorted(res_keys) == sorted(
+            ['date', 'outcome_account', 'outcome', 'income_account', 'income'])
+        assert sorted(res_values) == ['aaa', 'ccc', 'eee', 'fff', 'iii']
