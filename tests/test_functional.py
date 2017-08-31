@@ -63,11 +63,13 @@ def test_reads_paths_to_csv_files_from_stdin_and_visualizes_data():
     stdin = [
         # Provide path to CSV file with goals, when requested
         os.path.join(test_root, 'data', 'goals.csv'),
+        os.path.join(test_root, 'data', 'transactions.csv')
     ]
     stdout = [
         # Since userdata dir is empty, we don't know, where input files are, so
         # we should ask user for path to file with goals
         'Enter correct path to CSV file with goals (Ctrl+C to exit) ',
+        'Enter correct path to CSV file with transactions (Ctrl+C to exit) ',
     ]
 
     process = PopenWrapper(

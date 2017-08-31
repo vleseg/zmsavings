@@ -112,6 +112,7 @@ class TestAdHocConnector(object):
 class TestTransactionConnector(object):
     def test_use_only_declared_csv_fields(self, mocks):
         tc = TransactionConnector()
+        tc._header_line_no = 1
         mocks.reader.return_value = [
             ['date', 'do not use me', 'outcomeAccountName', 'pls no', 'outcome',
              'incomeAccountName', 'haha', 'no no no', 'income'],
@@ -122,3 +123,18 @@ class TestTransactionConnector(object):
         assert sorted(res_keys) == sorted(
             ['date', 'outcome_account', 'outcome', 'income_account', 'income'])
         assert sorted(res_values) == ['aaa', 'ccc', 'eee', 'fff', 'iii']
+
+    def test_starts_reading_file_from_specified_header_line(self, mocks):
+        tc = TransactionConnector()
+        tc._header_line_no = 5
+        mocks.reader.return_value = [
+            ['skip me'], ['skip', 'me too'], ['...'], ['start', 'with', 'next'],
+            ['outcomeAccountName', 'outcome', 'incomeAccountName', 'income',
+             'date', 'excess field'],
+            ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff'],
+        ]
+        res_keys, res_values = zip(*next(tc.all()).items())
+
+        assert sorted(res_keys) == sorted(
+            ['date', 'outcome_account', 'outcome', 'income_account', 'income'])
+        assert sorted(res_values) == ['aaa', 'bbb', 'ccc', 'ddd', 'eee']

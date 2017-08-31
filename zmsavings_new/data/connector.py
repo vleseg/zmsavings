@@ -20,6 +20,7 @@ class AdHocConnector(object):
 
 class CsvConnector(object):
     _csv2model_fields = {}
+    _header_line_no = 1
     _pointer_filename = ''
     _use_all_csv_fields = True
 
@@ -36,18 +37,19 @@ class CsvConnector(object):
 
     def _get_model_field_to_idx_mapping(self):
         result = {}
-        for i, csv_field_header in enumerate(self._source[0]):
-            if csv_field_header in self._csv2model_fields:
-                result[self._csv2model_fields[csv_field_header]] = i
-            elif self._use_all_csv_fields:  # same field name in csv and model
-                result[csv_field_header] = i
+        csv_header_line = self._source[self._header_line_no-1]
+        for i, field_header in enumerate(csv_header_line):
+            if field_header in self._csv2model_fields:
+                result[self._csv2model_fields[field_header]] = i
+            elif self._use_all_csv_fields:  # +same field name in csv and model
+                result[field_header] = i
 
         return result
 
     def all(self):
         header2idx = self._get_model_field_to_idx_mapping()
 
-        for row in self._source[1:]:
+        for row in self._source[self._header_line_no:]:
             yield dict((header, row[idx]) for header, idx in header2idx.items())
 
 
@@ -68,5 +70,6 @@ class TransactionConnector(CsvConnector):
         incomeAccountName='income_account',
         income='income',
     )
+    _header_line_no = 4
     _pointer_filename = 'pathToTransactionsCsv'
     _use_all_csv_fields = False
