@@ -43,8 +43,11 @@ class Goal(BaseModel):
     total = attr.ib()
 
 
+@attr.s
 class ProgressiveTotal(BaseModel):
-    pass
+    goal = attr.ib()
+    progressive_total_points = attr.ib(default=attr.Factory(list))
+    transactions = attr.ib(default=attr.Factory(list))
 
 
 @attr.s
