@@ -1,7 +1,8 @@
 # Third-party imports
 import unicodecsv as csv
 # Project imports
-from utils import path_from_appdata_or_input
+from utils.fs import path_from_appdata_or_input
+from utils.converter import Converter
 
 
 class AdHocConnector(object):
@@ -57,7 +58,7 @@ class GoalConnector(CsvConnector):
     _csv2model_fields = dict(
         accountName='account',
         goalName='name',
-        startDate='start_date',
+        startDate=Converter.to_datetime('start_date', fmt='%Y-%m-%d'),
     )
     _pointer_filename = 'pathToGoalsCsv'
 
