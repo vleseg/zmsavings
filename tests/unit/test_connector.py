@@ -20,9 +20,6 @@ def mocks():
     fixture_obj.reader = patch(
         'zmsavings_new.data.connector.csv.reader', spec_set=True).start()
     fixture_obj.reader.return_value = iter(['csv\n', 'file\n', 'content\n'])
-    fixture_obj.converter = patch(
-        'zmsavings_new.data.connector.Converter', spec_set=True).start()
-    fixture_obj.converter.to_datetime = Mock()
 
     return fixture_obj
 
@@ -82,17 +79,6 @@ class TestGoalConnectorAll(object):
         assert actual_dict_keys == sorted(
             ['account', 'name', 'start_date', 'total']
         )
-
-    def test_calls_special_converter_for_start_date_field(self, mocks):
-        mocks.reader.return_value = [
-            ['accountName', 'goalName', 'total', 'startDate'],
-            ['ABC Bank Debit', 'New car', '160000', '2016-10-10'],
-        ]
-        gc = GoalConnector()
-        gc.all()
-
-        mocks.converter.to_datetime.assert_called_once_with(
-            '2016-10-10', fmt="%Y-%m-%d")
 
 
 class TestAdHocConnector(object):

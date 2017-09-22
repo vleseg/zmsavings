@@ -48,17 +48,26 @@ class CsvConnector(object):
         return result
 
     def all(self):
-        header2idx = self._get_model_field_to_idx_mapping()
+        model_field2row_idx = self._get_model_field_to_idx_mapping()
 
         for row in self._source[self._header_line_no:]:
-            yield dict((header, row[idx]) for header, idx in header2idx.items())
+            row_dict = {}
+            for model_field, idx in model_field2row_idx.items():
+                if isinstance(model_field, Converter):
+                    value = model_field(row[idx])
+                    model_field = model_field.model_field_name
+                else:
+                    value = row[idx]
+                row_dict[model_field] = value
+
+            yield row_dict
 
 
 class GoalConnector(CsvConnector):
     _csv2model_fields = dict(
         accountName='account',
         goalName='name',
-        startDate=Converter.to_datetime('start_date', fmt='%Y-%m-%d'),
+        startDate=Converter.to_datetime('start_date', fmt='%d.%m.%Y'),
     )
     _pointer_filename = 'pathToGoalsCsv'
 
