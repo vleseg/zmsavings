@@ -1,7 +1,7 @@
 from zmsavings_new.data.model import ProgressiveTotal
 
 
-class TestProgressiveTotal():
+class TestProgressiveTotal(object):
     def test_transactions_and_pt_points_initialized_by_list_by_default(self):
         pt = ProgressiveTotal('goal name')
 

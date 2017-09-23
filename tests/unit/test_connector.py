@@ -1,6 +1,6 @@
 from datetime import datetime
 # Third-party imports
-from mock import Mock, mock_open, patch
+from mock import mock_open, patch
 import pytest
 # Project imports
 from zmsavings_new.data.connector import (
@@ -127,7 +127,8 @@ class TestTransactionConnector(object):
         mocks.reader.return_value = [
             ['date', 'do not use me', 'outcomeAccountName', 'pls no', 'outcome',
              'incomeAccountName', 'haha', 'no no no', 'income'],
-            ['2017-11-30', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'hhh', 'iii'],
+            ['2017-11-30', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'hhh',
+             'iii'],
         ]
         res_keys, res_values = zip(*next(tc.all()).items())
 

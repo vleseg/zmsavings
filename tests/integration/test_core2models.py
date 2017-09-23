@@ -1,10 +1,12 @@
 from datetime import date
 # Third-party imports
-from mock import Mock, patch
+from mock import patch
 import pytest
 # Project imports
 from zmsavings_new.core import (
     _select_transactions_for_goal, Account, Goal, Transaction)
+
+patch.object = patch.object
 
 
 @pytest.fixture()

@@ -6,6 +6,8 @@ from mock import patch
 from zmsavings_new.data.connector import GoalConnector
 from zmsavings_new.data.model import Goal
 
+patch.object = patch.object
+
 
 class TestGoal(object):
     def setup(self):

@@ -4,6 +4,8 @@ from mock import patch
 # Project imports
 from zmsavings_new.data.model import Account, AdHocModel
 
+patch.object = patch.object
+
 
 class TestAccount(object):
     def test_is_an_ad_hoc_model(self):

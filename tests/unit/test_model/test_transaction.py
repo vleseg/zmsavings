@@ -4,8 +4,10 @@ from mock import patch
 # Project imports
 from data.model import Transaction
 
+patch.object = patch.object
 
-class TestTransaction():
+
+class TestTransaction(object):
     def setup(self):
         self._mock_all = patch.object(Transaction._connector, 'all').start()
         self._mock_all.return_value = [
