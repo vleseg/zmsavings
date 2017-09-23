@@ -74,7 +74,7 @@ class GoalConnector(CsvConnector):
 
 class TransactionConnector(CsvConnector):
     _csv2model_fields = dict(
-        date='date',
+        date=Converter.to_datetime('date', fmt='%Y-%m-%d'),
         outcomeAccountName='outcome_account',
         outcome='outcome',
         incomeAccountName='income_account',
