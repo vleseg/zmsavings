@@ -1,6 +1,7 @@
 from datetime import datetime
 # Third-party imports
 from mock import mock_open, patch
+from money import Money
 import pytest
 # Project imports
 from zmsavings_new.data.connector import (
@@ -91,6 +92,16 @@ class TestGoalConnectorAll(object):
 
         assert gc_entry['start_date'] == datetime(2016, 5, 4)
 
+    def test_converts_amount_field_into_money_object(self, mocks):
+        mocks.reader.return_value = [
+            ['accountName', 'goalName', 'total', 'startDate'],
+            ['biz', 'baz', '5000,50', '06.06.2017']
+        ]
+        gc = GoalConnector()
+        gc_entry = list(gc.all())[0]
+
+        assert gc_entry['total'] == Money('5000.50', 'RUR')
+
 
 class TestAdHocConnector(object):
     def test_store_stores_item_in_the_inner_container(self):
@@ -126,16 +137,16 @@ class TestTransactionConnector(object):
         tc._header_line_no = 1
         mocks.reader.return_value = [
             ['date', 'do not use me', 'outcomeAccountName', 'pls no', 'outcome',
-             'incomeAccountName', 'haha', 'no no no', 'income'],
-            ['2017-11-30', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'hhh',
-             'iii'],
+             'incomeAccountName', 'ha ha', 'no no no', 'income'],
+            ['2017-11-30', 'aaa', 'bbb', 'ccc', '100', 'ddd', 'eee', 'iii',
+             '200'],
         ]
         res_keys, res_values = zip(*next(tc.all()).items())
 
         assert sorted(res_keys) == sorted(
             ['date', 'outcome_account', 'outcome', 'income_account', 'income'])
-        assert set(res_values) == {
-            datetime(2017, 11, 30), 'ccc', 'eee', 'fff', 'iii'}
+        assert set(res_values) == {datetime(2017, 11, 30), Money(200, 'RUR'),
+                                   Money(100, 'RUR'), 'bbb', 'ddd'}
 
     def test_starts_reading_file_from_specified_header_line(self, mocks):
         tc = TransactionConnector()
@@ -144,11 +155,11 @@ class TestTransactionConnector(object):
             ['skip me'], ['skip', 'me too'], ['...'], ['start', 'with', 'next'],
             ['outcomeAccountName', 'outcome', 'incomeAccountName', 'income',
              'date', 'excess field'],
-            ['aaa', 'bbb', 'ccc', 'ddd', '2016-12-31', 'fff'],
+            ['aaa', '15', 'bbb', '25', '2016-12-31', 'ccc'],
         ]
         res_keys, res_values = zip(*next(tc.all()).items())
 
         assert sorted(res_keys) == sorted(
             ['date', 'outcome_account', 'outcome', 'income_account', 'income'])
-        assert set(res_values) == {
-            'aaa', 'bbb', 'ccc', 'ddd', datetime(2016, 12, 31)}
+        assert set(res_values) == {datetime(2016, 12, 31), Money(15, 'RUR'),
+                                   Money(25, 'RUR'), 'aaa', 'bbb'}

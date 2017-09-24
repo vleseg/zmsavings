@@ -68,6 +68,7 @@ class GoalConnector(CsvConnector):
         accountName='account',
         goalName='name',
         startDate=Converter.to_datetime('start_date', fmt='%d.%m.%Y'),
+        total=Converter.to_rubles('total')
     )
     _pointer_filename = 'pathToGoalsCsv'
 
@@ -76,9 +77,9 @@ class TransactionConnector(CsvConnector):
     _csv2model_fields = dict(
         date=Converter.to_datetime('date', fmt='%Y-%m-%d'),
         outcomeAccountName='outcome_account',
-        outcome='outcome',
+        outcome=Converter.to_rubles('outcome'),
         incomeAccountName='income_account',
-        income='income',
+        income=Converter.to_rubles('income'),
     )
     _header_line_no = 4
     _pointer_filename = 'pathToTransactionsCsv'
