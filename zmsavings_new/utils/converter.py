@@ -1,4 +1,6 @@
 from datetime import datetime
+# Third-party imports
+from money import Money
 
 
 class Converter(object):
@@ -13,5 +15,12 @@ class Converter(object):
     def to_datetime(cls, model_field_name, fmt):
         def _convert(value):
             return datetime.strptime(value, fmt)
+
+        return cls(model_field_name, _convert)
+
+    @classmethod
+    def to_rubles(cls, model_field_name):
+        def _convert(value):
+            return Money(amount=value.replace(',', '.'), currency='RUR')
 
         return cls(model_field_name, _convert)
