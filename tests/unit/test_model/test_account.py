@@ -39,3 +39,11 @@ class TestAccount(object):
         assert [a.name for a in Account.all()] == [
             'my account', 'your account', 'our account'
         ]
+
+    def test_factory_returns_none_if_name_is_empty_string(self):
+        assert Account.factory('') is None
+
+    def test_if_account_object_is_passed_to_factory_this_obj_is_returned(self):
+        a = Account('konto')
+
+        assert Account.factory(a) is a

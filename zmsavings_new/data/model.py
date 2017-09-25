@@ -31,6 +31,15 @@ class AdHocModel(BaseModel):
 class Account(AdHocModel):
     name = attr.ib()
 
+    @classmethod
+    def factory(cls, account_name):
+        if isinstance(account_name, cls):
+            return account_name
+        elif len(account_name) > 0:
+            return cls(account_name)
+        else:
+            return None
+
 
 @attr.s
 class Goal(BaseModel):
@@ -46,8 +55,8 @@ class Goal(BaseModel):
 @attr.s
 class ProgressiveTotal(BaseModel):
     goal = attr.ib()
+    transactions = attr.ib()
     progressive_total_points = attr.ib(default=attr.Factory(list))
-    transactions = attr.ib(default=attr.Factory(list))
 
 
 @attr.s
@@ -55,7 +64,7 @@ class Transaction(BaseModel):
     _connector = TransactionConnector()
 
     date = attr.ib()
-    income_account = attr.ib()
-    outcome_account = attr.ib()
+    income_account = attr.ib(convert=Account.factory)
+    outcome_account = attr.ib(convert=Account.factory)
     income = attr.ib()
     outcome = attr.ib()
