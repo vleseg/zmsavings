@@ -21,6 +21,10 @@ class Converter(object):
     @classmethod
     def to_rubles(cls, model_field_name):
         def _convert(value):
-            return Money(amount=value.replace(',', '.'), currency='RUR')
+            if value == '':
+                value = 0
+            else:
+                value = value.replace(',', '.')
+            return Money(amount=value, currency='RUR')
 
         return cls(model_field_name, _convert)

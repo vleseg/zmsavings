@@ -33,7 +33,13 @@ class TestConverter(object):
         assert result.currency == 'RUR'
 
     def test_to_rubles_handles_decimal_comma_correctly(self):
-        converter = Converter.to_rubles('some_cash')
+        converter = Converter.to_rubles('money')
         result = converter('3,62')
 
         assert result.amount == Decimal('3.62')
+
+    def test_to_rubles_converts_empty_string_to_zero(self):
+        converter = Converter.to_rubles('rubles')
+        result = converter('')
+
+        assert int(result.amount) == 0
