@@ -1,5 +1,6 @@
 # Third-party imports
 import attr
+from money import Money
 # Project imports
 from connector import AdHocConnector, GoalConnector, TransactionConnector
 
@@ -57,6 +58,31 @@ class ProgressiveTotal(BaseModel):
     goal = attr.ib()
     transactions = attr.ib()
     progressive_total_points = attr.ib(default=attr.Factory(list))
+
+    def _is_income_transaction(self, transaction):
+        if transaction.income == Money(0, 'RUR'):
+            return False
+        if transaction.income_account != self.goal.account:
+            return False
+        return True
+
+    def calculate(self):
+        current_total = Money(0, 'RUR')
+
+        for t in self.transactions:
+            if self._is_income_transaction(t):
+                current_total += t.income
+            else:
+                current_total -= t.outcome
+            self.progressive_total_points.append(
+                ProgressiveTotalPoint(total=Money(current_total.amount, 'RUR'),
+                                      date=t.date))
+
+
+@attr.s
+class ProgressiveTotalPoint(BaseModel):
+    total = attr.ib()
+    date = attr.ib()
 
 
 @attr.s
