@@ -1,6 +1,7 @@
 from datetime import datetime
 # Third-party imports
 import pytest
+from mock import patch
 from money import Money
 # Project imports
 from zmsavings_new.data.model import Goal, ProgressiveTotal, Transaction
@@ -97,6 +98,17 @@ def test_calculate_fills_in_missed_dates_between_transaction(prog_total,
         datetime(2015, 1, 6), datetime(2015, 1, 7), datetime(2015, 1, 8),
         datetime(2015, 1, 9), datetime(2015, 1, 10), datetime(2015, 1, 11),
     ]
+
+
+@patch('zmsavings_new.data.model.today')
+def test_calculate_fills_in_dates_up_until_today(mock_today, prog_total,
+                                                 transactions):
+    mock_today.return_value = datetime(2015, 1, 10)
+    prog_total.transactions = transactions
+    prog_total.calculate()
+
+    assert len(prog_total.progressive_total_points) == 10
+    assert prog_total.progressive_total_points[-1].date == datetime(2015, 1, 10)
 
 
 def test_is_income_transaction_returns_true_for_transfer_to_goal_acc(
