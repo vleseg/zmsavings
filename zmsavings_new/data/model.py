@@ -1,9 +1,11 @@
+import copy
 from datetime import timedelta
 # Third-party imports
 import attr
 from money import Money
 # Project imports
 from connector import AdHocConnector, GoalConnector, TransactionConnector
+from utils.misc import get_today
 
 
 class BaseModel(object):
@@ -70,11 +72,12 @@ class ProgressiveTotal(BaseModel):
     def calculate(self):
         current_total = Money(0, 'RUR')
         previous_date = None
+        one_day = timedelta(days=1)
 
         for t in self.transactions:
             if previous_date is not None:
-                while t.date - previous_date > timedelta(days=1):
-                    previous_date += timedelta(days=1)
+                while t.date - previous_date > one_day:
+                    previous_date += one_day
                     self.progressive_total_points.append(ProgressiveTotalPoint(
                         total=Money(current_total.amount, 'RUR'),
                         date=previous_date
@@ -88,6 +91,14 @@ class ProgressiveTotal(BaseModel):
                 ProgressiveTotalPoint(total=Money(current_total.amount, 'RUR'),
                                       date=t.date))
             previous_date = t.date
+
+        today = get_today()
+        last_ptp = self.progressive_total_points[-1]
+        while previous_date != today:
+            previous_date += one_day
+            self.progressive_total_points.append(
+                ProgressiveTotalPoint(total=last_ptp.total, date=previous_date)
+            )
 
 
 @attr.s
