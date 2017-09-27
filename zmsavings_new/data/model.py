@@ -1,3 +1,4 @@
+from datetime import timedelta
 # Third-party imports
 import attr
 from money import Money
@@ -68,8 +69,17 @@ class ProgressiveTotal(BaseModel):
 
     def calculate(self):
         current_total = Money(0, 'RUR')
+        previous_date = None
 
         for t in self.transactions:
+            if previous_date is not None:
+                while t.date - previous_date > timedelta(days=1):
+                    previous_date += timedelta(days=1)
+                    self.progressive_total_points.append(ProgressiveTotalPoint(
+                        total=Money(current_total.amount, 'RUR'),
+                        date=previous_date
+                    ))
+
             if self._is_income_transaction(t):
                 current_total += t.income
             else:
@@ -77,6 +87,7 @@ class ProgressiveTotal(BaseModel):
             self.progressive_total_points.append(
                 ProgressiveTotalPoint(total=Money(current_total.amount, 'RUR'),
                                       date=t.date))
+            previous_date = t.date
 
 
 @attr.s

@@ -86,10 +86,9 @@ def test_calculate_fills_in_missed_dates_between_transaction(prog_total,
     prog_total.calculate()
 
     assert [p.total for p in prog_total.progressive_total_points] == [
-        rur('99.99'), rur('99.99'), rur('99.99'), rur('99.99'), rur('199.99'),
-        rur('224.99'), rur('209.99'), rur('199.55'), rur('198.55'),
-        rur('1198.55'), rur('1198.55'), rur('1198.55'), rur('1298.54'),
-        rur('1298.54'), rur('1148.54')
+        rur(50), rur(50), rur(50), rur(50), rur(150), rur(175), rur(160),
+        rur('149.45'), rur('148.45'), rur("1148.45"), rur("1148.45"),
+        rur("1148.45"), rur('1248.44'), rur('1248.44'), rur('1098.44')
     ]
     assert [p.date for p in prog_total.progressive_total_points] == [
         datetime(2014, 12, 28), datetime(2014, 12, 29), datetime(2014, 12, 30),
