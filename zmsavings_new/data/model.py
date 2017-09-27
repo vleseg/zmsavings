@@ -70,6 +70,9 @@ class ProgressiveTotal(BaseModel):
         return True
 
     def calculate(self):
+        if len(self.transactions) == 0:
+            return
+
         current_total = Money(0, 'RUR')
         previous_date = None
         one_day = timedelta(days=1)

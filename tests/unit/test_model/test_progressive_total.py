@@ -55,6 +55,13 @@ def test_progressive_total_points_initialized_by_list_by_default(fixture):
     assert fixture.prog_total.progressive_total_points == []
 
 
+def test_calculate_handles_empty_transaction_list_correctly(fixture):
+    fixture.prog_total.transactions = []
+    fixture.prog_total.calculate()
+
+    assert fixture.prog_total.progressive_total_points == []
+
+
 def test_calculates_progressive_total_based_on_transactions_given(fixture):
     fixture.prog_total.calculate()
 
