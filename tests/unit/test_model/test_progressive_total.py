@@ -21,12 +21,9 @@ def prog_total(goal):
     return ProgressiveTotal(goal, transactions=[])
 
 
-def test_progressive_total_points_initialized_by_list_by_default(prog_total):
-    assert prog_total.progressive_total_points == []
-
-
-def test_calculates_progressive_total_based_on_transactions_given(prog_total):
-    transactions = [
+@pytest.fixture
+def transactions():
+    return [
         Transaction(
             date=datetime(2015, 1, 1), income_account='goal account',
             outcome_account='other account', income=rur(100),
@@ -50,6 +47,14 @@ def test_calculates_progressive_total_based_on_transactions_given(prog_total):
             outcome_account='other account 2', income=rur(1000),
             outcome=rur(1000)),
     ]
+
+
+def test_progressive_total_points_initialized_by_list_by_default(prog_total):
+    assert prog_total.progressive_total_points == []
+
+
+def test_calculates_progressive_total_based_on_transactions_given(prog_total,
+                                                                  transactions):
     prog_total.transactions = transactions
     prog_total.calculate()
 
@@ -60,6 +65,38 @@ def test_calculates_progressive_total_based_on_transactions_given(prog_total):
     assert [p.date for p in prog_total.progressive_total_points] == [
         datetime(2015, 1, 1), datetime(2015, 1, 2), datetime(2015, 1, 3),
         datetime(2015, 1, 4), datetime(2015, 1, 5), datetime(2015, 1, 6)
+    ]
+
+
+def test_calculate_fills_in_missed_dates_between_transaction(prog_total,
+                                                             transactions):
+    transactions.insert(0, Transaction(
+        datetime(2014, 12, 28), income_account='goal account',
+        outcome_account='other account', income=rur(50), outcome=rur('48.50')
+    ))
+    transactions.extend([
+        Transaction(
+            datetime(2015, 1, 9), income_account='goal account',
+            outcome_account='', income=rur('99.99'), outcome=rur(0)),
+        Transaction(
+            datetime(2015, 1, 11), income_account='other account 2',
+            outcome_account='goal_account', income=rur(150), outcome=rur(150))
+    ])
+    prog_total.transactions = transactions
+    prog_total.calculate()
+
+    assert [p.total for p in prog_total.progressive_total_points] == [
+        rur('99.99'), rur('99.99'), rur('99.99'), rur('99.99'), rur('199.99'),
+        rur('224.99'), rur('209.99'), rur('199.55'), rur('198.55'),
+        rur('1198.55'), rur('1198.55'), rur('1198.55'), rur('1298.54'),
+        rur('1298.54'), rur('1148.54')
+    ]
+    assert [p.date for p in prog_total.progressive_total_points] == [
+        datetime(2014, 12, 28), datetime(2014, 12, 29), datetime(2014, 12, 30),
+        datetime(2014, 12, 31), datetime(2015, 1, 1), datetime(2015, 1, 2),
+        datetime(2015, 1, 3), datetime(2015, 1, 4), datetime(2015, 1, 5),
+        datetime(2015, 1, 6), datetime(2015, 1, 7), datetime(2015, 1, 8),
+        datetime(2015, 1, 9), datetime(2015, 1, 10), datetime(2015, 1, 11),
     ]
 
 
