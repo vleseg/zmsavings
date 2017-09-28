@@ -136,3 +136,13 @@ def test_is_income_transaction_returns_false_for_pure_outcome(fixture):
         outcome_account='goal account', income=rur(0), outcome=rur(100))
 
     assert not fixture.prog_total._is_income_transaction(transaction)
+
+
+@patch('zmsavings_new.data.model.Visualizer', spec_set=True)
+def test_visualize_inits_visualizer_and_calls_generate(mock_visualizer,
+                                                       fixture):
+    fixture.prog_total.visualize()
+
+    mock_visualizer.assert_called_once_with(
+        fixture.prog_total.goal, fixture.prog_total.progressive_total_points)
+    assert mock_visualizer.return_value.generate.called

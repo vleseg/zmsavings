@@ -1,4 +1,3 @@
-import copy
 from datetime import timedelta
 # Third-party imports
 import attr
@@ -6,6 +5,7 @@ from money import Money
 # Project imports
 from connector import AdHocConnector, GoalConnector, TransactionConnector
 from utils.misc import get_today
+from visualizer import Visualizer
 
 
 class BaseModel(object):
@@ -102,6 +102,9 @@ class ProgressiveTotal(BaseModel):
             self.progressive_total_points.append(
                 ProgressiveTotalPoint(total=last_ptp.total, date=previous_date)
             )
+
+    def visualize(self):
+        Visualizer(self.goal, self.progressive_total_points).generate()
 
 
 @attr.s
