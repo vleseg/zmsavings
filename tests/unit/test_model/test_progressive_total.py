@@ -75,6 +75,37 @@ def test_calculates_progressive_total_based_on_transactions_given(fixture):
     ]
 
 
+def test_calculates_correctly_handles_multiple_transactions_per_day(fixture):
+    fixture.prog_total.transactions.extend([
+        Transaction(
+            date=datetime(2015, 1, 1), income_account='goal account',
+            outcome_account='other account 2', income=rur(345),
+            outcome=rur(340)),
+        Transaction(
+            date=datetime(2015, 1, 3), income_account='goal account',
+            outcome_account='other account', income=rur(999), outcome=rur(999)),
+        Transaction(
+            date=datetime(2015, 1, 3), income_account='',
+            outcome_account='goal account', income=rur(0), outcome=rur(10)),
+        Transaction(
+            date=datetime(2015, 1, 5), income_account='goal account',
+            outcome_account='other account 2', income=rur(1),
+            outcome=rur('0.99')),
+    ])
+    fixture.prog_total.transactions = sorted(
+        fixture.prog_total.transactions, key=lambda t: t.date)
+    fixture.prog_total.calculate()
+
+    assert [p.total for p in fixture.prog_total.progressive_total_points] == [
+        rur(445), rur(470), rur(1444), rur('1433.45'), rur('1433.45'),
+        rur('2433.45')
+    ]
+    assert [p.date for p in fixture.prog_total.progressive_total_points] == [
+        datetime(2015, 1, 1), datetime(2015, 1, 2), datetime(2015, 1, 3),
+        datetime(2015, 1, 4), datetime(2015, 1, 5), datetime(2015, 1, 6)
+    ]
+
+
 def test_calculate_fills_in_missed_dates_between_transaction(fixture):
     fixture.prog_total.transactions.insert(0, Transaction(
         datetime(2014, 12, 28), income_account='goal account',
