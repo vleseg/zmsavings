@@ -79,6 +79,7 @@ class ProgressiveTotal(BaseModel):
 
         for t in self.transactions:
             if previous_date is not None:
+                # Fill in gaps (like 1st Sep, ..., 4th Sep) between dates
                 while t.date - previous_date > one_day:
                     previous_date += one_day
                     self.progressive_total_points.append(ProgressiveTotalPoint(
@@ -90,9 +91,11 @@ class ProgressiveTotal(BaseModel):
                 current_total += t.income
             else:
                 current_total -= t.outcome
-            self.progressive_total_points.append(
-                ProgressiveTotalPoint(total=Money(current_total.amount, 'RUR'),
-                                      date=t.date))
+            if t.date == previous_date:  # Several transactions per day\
+                self.progressive_total_points[-1].total = current_total
+            else:
+                self.progressive_total_points.append(
+                    ProgressiveTotalPoint(total=current_total, date=t.date))
             previous_date = t.date
 
         today = get_today()
