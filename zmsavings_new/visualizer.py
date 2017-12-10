@@ -1,6 +1,21 @@
+from __future__ import print_function
+# Third-party imports
+import matplotlib.pyplot as plt
+# Project imports
+from utils.fs import get_random_file_path
+
+
 class Visualizer(object):
     def __init__(self, goal, progressive_total):
-        pass
+        self.goal = goal
+        self.progressive_total = progressive_total
 
     def generate(self):
-        pass
+        out_file = get_random_file_path() + '.png'
+
+        plt.plot(self.progressive_total)
+        plt.ylabel(self.goal)
+        plt.savefig(out_file)
+
+        print_function("Visualization generated successfully. Saved to {0}"
+                       .format(out_file))

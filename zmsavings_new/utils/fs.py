@@ -6,6 +6,10 @@ import appdirs
 APP_NAME = 'ZmSavings'
 
 
+def get_random_file_path():
+    pass
+
+
 def get_or_create_user_data_dir():
     user_data_dir = appdirs.user_data_dir(APP_NAME)
     if not os.path.isdir(user_data_dir):
