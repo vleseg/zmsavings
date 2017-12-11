@@ -13,9 +13,10 @@ class Visualizer(object):
     def generate(self):
         out_file = get_random_file_path() + '.png'
 
-        plt.plot(self.progressive_total)
+        plt.plot(zip(*(
+            (ptp.date, ptp.total) for ptp in self.progressive_total)))
         plt.ylabel(self.goal)
         plt.savefig(out_file)
 
-        print_function("Visualization generated successfully. Saved to {0}"
+        print_function('Visualization generated successfully. Saved to {0}'
                        .format(out_file))
