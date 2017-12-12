@@ -1,4 +1,5 @@
 import datetime
+import os
 # Third-party imports
 from mock import Mock, patch
 from money import Money
@@ -47,16 +48,15 @@ def fixture(progressive_total, tmpdir):
     return fixture_obj
 
 
-@patch('zmsavings_new.visualizer.plt.plot')
 class TestVisualizer(object):
-    def test_basic_functionality(self, _, fixture):
+    @pytest.skip
+    def test_basic_functionality(self, fixture):
         v = Visualizer('test_goal', fixture.progressive_total)
         v.generate()
 
-        fixture.mocks.print_function.assert_called_once_with(
-            'Visualization generated successfully. Saved to {0}'.format(
-                fixture.out_file + '.png'))
+        os.path.isfile(fixture.out_File)
 
+    @patch('zmsavings_new.visualizer.plt.plot')
     def test_progressive_total_is_split_into_two_lists_to_generate_plot(
             self, mock_plot, fixture):
         v = Visualizer('test_goal', fixture.progressive_total)
@@ -69,3 +69,12 @@ class TestVisualizer(object):
         assert x_axis[-1] == NOV(7)
         assert y_axis[0] == RUR(0)
         assert y_axis[-1] == RUR(1340)
+
+    @patch('zmsavings_new.visualizer.plt.plot')
+    def test_reports_success(self, _, fixture):
+        v = Visualizer('test_goal', fixture.progressive_total)
+        v.generate()
+
+        fixture.mocks.print_function.assert_called_once_with(
+            'Visualization generated successfully. Saved to {0}'.format(
+                fixture.out_file + '.png'))
