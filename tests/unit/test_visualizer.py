@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 import os
 # Third-party imports
 from mock import Mock, patch
@@ -14,7 +15,6 @@ NOV = lambda day: datetime.date(2017, 11, day)
 
 @pytest.fixture
 def progressive_total():
-
     return [
         ProgressiveTotalPoint(total=RUR(0), date=NOV(1)),
         ProgressiveTotalPoint(total=RUR(1000), date=NOV(2)),
@@ -49,26 +49,25 @@ def fixture(progressive_total, tmpdir):
 
 
 class TestVisualizer(object):
-    @pytest.skip
     def test_basic_functionality(self, fixture):
         v = Visualizer('test_goal', fixture.progressive_total)
         v.generate()
 
-        os.path.isfile(fixture.out_File)
+        os.path.isfile(fixture.out_file)
 
-    @patch('zmsavings_new.visualizer.plt.plot')
+    @patch('zmsavings_new.visualizer.plt.plot_date')
     def test_progressive_total_is_split_into_two_lists_to_generate_plot(
             self, mock_plot, fixture):
         v = Visualizer('test_goal', fixture.progressive_total)
         v.generate()
 
         mock_plot.assert_called_once()
-        x_axis, y_axis = mock_plot.call_args[0][0]
+        x_axis, y_axis = mock_plot.call_args[0]
 
         assert x_axis[0] == NOV(1)
         assert x_axis[-1] == NOV(7)
-        assert y_axis[0] == RUR(0)
-        assert y_axis[-1] == RUR(1340)
+        assert y_axis[0] == Decimal(0)
+        assert y_axis[-1] == Decimal(1340)
 
     @patch('zmsavings_new.visualizer.plt.plot')
     def test_reports_success(self, _, fixture):
