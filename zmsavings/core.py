@@ -1,30 +1,23 @@
-# Project imports
-from data.aggregate import GoalTransactions
-from data.model import Goal, Transaction
-from visualization import visualize
+from data.model import Account, Goal, ProgressiveTotal, Transaction
+
+
+def _select_transactions_for_goal(goal):
+    account = Account.select(lambda a: a.name == goal.account.name)[0]
+    return Transaction.select(
+        lambda t:
+            (t.income_account == account or t.outcome_account == account) and
+            t.date >= goal.start_date)
 
 
 def main():
-    account_name_to_gt = {
-        goal.account_name: GoalTransactions(goal) for goal in Goal.all()}
-    for t in Transaction.all():
-        try:
-            acc_name = (set(account_name_to_gt.keys()) &
-                        {t.income_account_name, t.outcome_account_name}).pop()
-        # If money did not arrive or leave account, this transaction should be
-        # skipped
-        except KeyError:
-            continue
-        goal_transactions = account_name_to_gt[acc_name]
-        if t.date >= goal_transactions.goal.start_date:
-            goal_transactions.transactions.append(t)
+    progressive_totals = []
+    for g in Goal.all():
+        transactions = _select_transactions_for_goal(g)
+        progressive_totals.append(ProgressiveTotal(g, transactions))
 
-    all_goal_transactions = account_name_to_gt.values()
-
-    for gt in all_goal_transactions:
-        gt.calculate_progressive_total()
-        gt.fill_in_blanks()
-        visualize(gt)
+    for pt in progressive_totals:
+        pt.calculate()
+        pt.visualize()
 
 
 if __name__ == '__main__':

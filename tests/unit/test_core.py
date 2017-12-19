@@ -1,14 +1,14 @@
 # Third-party imports
 from mock import call, Mock, patch
 # Project imports
-from zmsavings_new.core import _select_transactions_for_goal, main
+from zmsavings.core import _select_transactions_for_goal, main
 
 
-@patch('zmsavings_new.core.ProgressiveTotal')
-@patch('zmsavings_new.core._select_transactions_for_goal')
+@patch('core.ProgressiveTotal')
+@patch('core._select_transactions_for_goal')
 class TestMain(object):
     def setup_method(self):
-        self._goal_patcher = patch('zmsavings_new.core.Goal')
+        self._goal_patcher = patch('core.Goal')
         self._m_goal = self._goal_patcher.start()
         self._m_goal.all = Mock(return_value=['goal_1', 'goal_2', 'goal_3'])
 
@@ -54,8 +54,8 @@ class TestMain(object):
         self._goal_patcher.stop()
 
 
-@patch('zmsavings_new.core.Account', spec_set=True)
-@patch('zmsavings_new.core.Transaction', spec_set=True)
+@patch('core.Account', spec_set=True)
+@patch('core.Transaction', spec_set=True)
 class TestSelectTransactions(object):
     def test_selects_acc_and_then_its_transactions_by_cryptic_callables(
             self, mock_transaction, mock_account):

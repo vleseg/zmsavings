@@ -4,7 +4,7 @@ import pytest
 from mock import patch
 from money import Money
 # Project imports
-from zmsavings_new.data.model import Goal, ProgressiveTotal, Transaction
+from zmsavings.data.model import Goal, ProgressiveTotal, Transaction
 
 
 def rur(value):
@@ -44,8 +44,7 @@ def fixture():
             outcome=rur(1000)),
     ])
 
-    fixture_obj.mock_get_today = patch(
-        'zmsavings_new.data.model.get_today').start()
+    fixture_obj.mock_get_today = patch('data.model.get_today').start()
     fixture_obj.mock_get_today.return_value = datetime(2015, 1, 6)
 
     return fixture_obj
@@ -169,7 +168,7 @@ def test_is_income_transaction_returns_false_for_pure_outcome(fixture):
     assert not fixture.prog_total._is_income_transaction(transaction)
 
 
-@patch('zmsavings_new.data.model.Visualizer', spec_set=True)
+@patch('data.model.Visualizer', spec_set=True)
 def test_visualize_inits_visualizer_and_calls_generate(mock_visualizer,
                                                        fixture):
     fixture.prog_total.visualize()

@@ -6,8 +6,8 @@ from mock import Mock, patch
 from money import Money
 import pytest
 # Project imports
-from zmsavings_new.data.model import ProgressiveTotalPoint
-from zmsavings_new.visualizer import Visualizer
+from zmsavings.data.model import ProgressiveTotalPoint
+from zmsavings.visualizer import Visualizer
 
 RUR = lambda amount: Money(amount, currency='RUR')
 NOV = lambda day: datetime.date(2017, 11, day)
@@ -40,10 +40,10 @@ def fixture(progressive_total, tmpdir):
 
     fixture_obj.mocks = Mocks()
     fixture_obj.mocks.get_random_file_path = patch(
-        'zmsavings_new.visualizer.get_random_file_path').start()
+        'visualizer.get_random_file_path').start()
     fixture_obj.mocks.get_random_file_path.return_value = fixture_obj.out_file
     fixture_obj.mocks.print_function = patch(
-        'zmsavings_new.visualizer.print_function').start()
+        'visualizer.print_function').start()
 
     return fixture_obj
 
@@ -55,7 +55,7 @@ class TestVisualizer(object):
 
         os.path.isfile(fixture.out_file)
 
-    @patch('zmsavings_new.visualizer.plt.plot_date')
+    @patch('visualizer.plt.plot_date')
     def test_progressive_total_is_split_into_two_lists_to_generate_plot(
             self, mock_plot, fixture):
         v = Visualizer('test_goal', fixture.progressive_total)
@@ -69,7 +69,7 @@ class TestVisualizer(object):
         assert y_axis[0] == Decimal(0)
         assert y_axis[-1] == Decimal(1340)
 
-    @patch('zmsavings_new.visualizer.plt.plot')
+    @patch('visualizer.plt.plot')
     def test_reports_success(self, _, fixture):
         v = Visualizer('test_goal', fixture.progressive_total)
         v.generate()

@@ -57,7 +57,7 @@ def test_reads_paths_to_csv_files_from_stdin_and_visualizes_data():
     # be passed as argument to the Python interpreter
     test_root = os.path.dirname(__file__)
     path_to_core_py = os.path.join(
-        os.path.dirname(test_root), 'zmsavings_new', 'core.py')
+        os.path.dirname(test_root), 'zmsavings', 'core.py')
 
     stdin = [
         # Provide path to CSV file with goals, when requested

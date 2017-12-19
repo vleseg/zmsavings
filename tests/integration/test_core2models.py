@@ -3,7 +3,7 @@ from datetime import date
 from mock import patch
 import pytest
 # Project imports
-from zmsavings_new.core import (
+from zmsavings.core import (
     _select_transactions_for_goal, Account, Goal, Transaction)
 
 patch.object = patch.object

@@ -4,7 +4,7 @@ from mock import mock_open, patch
 from money import Money
 import pytest
 # Project imports
-from zmsavings_new.data.connector import (
+from zmsavings.data.connector import (
     AdHocConnector, CsvConnector, GoalConnector, TransactionConnector)
 
 
@@ -15,12 +15,12 @@ def mocks():
 
     fixture_obj = Mocks()
     fixture_obj.open = patch(
-        'zmsavings_new.data.connector.open', mock_open(), create=True).start()
+        'data.connector.open', mock_open(), create=True).start()
     fixture_obj.get_path = patch(
-        'zmsavings_new.data.connector.path_from_appdata_or_input').start()
+        'data.connector.path_from_appdata_or_input').start()
     fixture_obj.get_path.return_value = 'path_to_csv_file'
     fixture_obj.reader = patch(
-        'zmsavings_new.data.connector.csv.reader', spec_set=True).start()
+        'data.connector.csv.reader', spec_set=True).start()
     fixture_obj.reader.return_value = iter(['csv\n', 'file\n', 'content\n'])
 
     return fixture_obj

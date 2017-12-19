@@ -2,7 +2,7 @@
 from mock import mock_open, patch
 import pytest
 # Project imports
-from zmsavings_new.utils.fs import (
+from zmsavings.utils.fs import (
     get_or_create_user_data_dir, read_path, read_yes_no,
     path_from_appdata_or_input)
 
@@ -13,20 +13,18 @@ class StopExecution(BaseException):
 
 class TestPathFromAppdataOrInput(object):
     def setup(self):
-        patcher = patch('zmsavings_new.utils.fs.open', mock_open(), create=True)
+        patcher = patch('utils.fs.open', mock_open(), create=True)
         self._mock_open = patcher.start()
         self._mock_open.return_value.read.return_value = 'path_from_ptr_file'
 
         # Other mocks
-        self._mock_os = patch(
-            'zmsavings_new.utils.fs.os', spec_set=True).start()
+        self._mock_os = patch('utils.fs.os', spec_set=True).start()
         self._mock_os.path.isfile.return_value = True
-        self._mock_read_yes_no = patch(
-            'zmsavings_new.utils.fs.read_yes_no').start()
+        self._mock_read_yes_no = patch('utils.fs.read_yes_no').start()
         self._mock_get_or_create_udd = patch(
-            'zmsavings_new.utils.fs.get_or_create_user_data_dir').start()
+            'utils.fs.get_or_create_user_data_dir').start()
         self._mock_get_or_create_udd.return_value = 'user_data_dir'
-        self._mock_read_path = patch('zmsavings_new.utils.fs.read_path').start()
+        self._mock_read_path = patch('utils.fs.read_path').start()
         self._mock_read_path.return_value = 'new_path_to_csv'
 
     def test_gets_path_to_ptr_file_by_name_and_opens_it(self):
@@ -66,7 +64,7 @@ class TestPathFromAppdataOrInput(object):
             "Enter valid path to 'something'")
         assert result == self._mock_read_path.return_value
 
-    @patch('zmsavings_new.utils.fs.print_function')
+    @patch('utils.fs.print_function')
     def test_prompts_path_to_csv_file_if_path_in_pointer_file_is_wrong(
             self, mock_print):
         # First call checks for ptr file, second call checks for csv file
@@ -93,8 +91,8 @@ class TestPathFromAppdataOrInput(object):
             'new_path_to_csv')
 
 
-@patch('zmsavings_new.utils.fs.os', spec_set=True)
-@patch('zmsavings_new.utils.fs.appdirs', spec_set=True)
+@patch('utils.fs.os', spec_set=True)
+@patch('utils.fs.appdirs', spec_set=True)
 class TestGetUserDataDir(object):
     def test_gets_user_data_dir_from_appdirs_with_app_name(self,
                                                            mock_appdirs, _):
@@ -113,9 +111,9 @@ class TestGetUserDataDir(object):
         assert result == mock_appdirs_rv
 
 
-@patch('zmsavings_new.utils.fs.print_function')
-@patch('zmsavings_new.utils.fs.os', spec_set=True)
-@patch('zmsavings_new.utils.fs.raw_input')
+@patch('utils.fs.print_function')
+@patch('utils.fs.os', spec_set=True)
+@patch('utils.fs.raw_input')
 class TestReadPath(object):
     def test_adds_exit_instruction_to_prompt_and_reads_path_from_user(
             self, mock_raw_input, _, _2):
@@ -137,7 +135,7 @@ class TestReadPath(object):
         mock_raw_input.assert_called_with('enter path (Ctrl+C to abort) ')
 
 
-@patch('zmsavings_new.utils.fs.raw_input')
+@patch('utils.fs.raw_input')
 class TestReadYesNo(object):
     def test_adds_instruction_to_prompt_and_reads_from_user(self,
                                                             mock_raw_input):

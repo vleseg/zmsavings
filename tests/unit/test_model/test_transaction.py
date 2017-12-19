@@ -2,7 +2,7 @@ from datetime import datetime
 # Third-party imports
 from mock import patch
 # Project imports
-from data.model import Transaction
+from zmsavings.data.model import Transaction
 
 patch.object = patch.object
 

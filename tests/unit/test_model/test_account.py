@@ -2,7 +2,7 @@
 import pytest
 from mock import patch
 # Project imports
-from zmsavings_new.data.model import Account, AdHocModel
+from zmsavings.data.model import Account, AdHocModel
 
 patch.object = patch.object
 

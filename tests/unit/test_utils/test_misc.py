@@ -1,6 +1,6 @@
 from datetime import datetime
 # Project imports
-from zmsavings_new.utils.misc import get_today
+from zmsavings.utils.misc import get_today
 
 
 def test_get_today_returns_today_as_datetime_without_time():

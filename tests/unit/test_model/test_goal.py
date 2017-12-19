@@ -3,8 +3,8 @@ from datetime import datetime
 # Third-party imports
 from mock import patch
 # Project imports
-from zmsavings_new.data.connector import GoalConnector
-from zmsavings_new.data.model import Goal
+from zmsavings.data.connector import GoalConnector
+from zmsavings.data.model import Goal
 
 patch.object = patch.object
 
